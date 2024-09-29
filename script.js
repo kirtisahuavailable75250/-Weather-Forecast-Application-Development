@@ -1,5 +1,5 @@
-  // OpenWeatherMap API key (Replace with your own key)
-const API_KEY = "Enter Your Own API Key";
+// OpenWeatherMap API key (Replace with your own key)
+const API_KEY = "edb6bee1c9cd64b405d0620200a0f5de";
 
 // HTML Elements
 const searchBtn = document.getElementById('searchBtn');
@@ -8,11 +8,19 @@ const cityInput = document.getElementById('cityInput');
 const weatherDetails = document.getElementById('weatherDetails');
 const extendedForecast = document.getElementById('extendedForecast');
 const errorDiv = document.getElementById('error');
+const dropdownBtn = document.getElementById('dropdownBtn');
+const recentSearchesDropdown = document.getElementById('recentSearchesDropdown');
+
+// Load recent city names from local storage on page load
+window.onload = () => {
+    loadRecentSearches();
+};
 
 // Search by city
 searchBtn.addEventListener('click', () => {
     const city = cityInput.value.trim();
     if (city) {
+        addRecentSearch(city);
         fetchWeatherByCity(city);
     } else {
         showError("Please enter a valid city name.");
@@ -122,3 +130,48 @@ function showError(message) {
     weatherDetails.classList.add('hidden');
     extendedForecast.classList.add('hidden');
 }
+
+// Add recent search to local storage
+function addRecentSearch(city) {
+    const recentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
+    
+    // Add city to the beginning of the array and remove duplicates
+    if (!recentSearches.includes(city)) {
+        recentSearches.unshift(city);
+        if (recentSearches.length > 5) {
+            recentSearches.pop(); // Keep only the last 5 searches
+        }
+        localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
+    }
+
+    loadRecentSearches();
+}
+
+// Load recent searches from local storage
+function loadRecentSearches() {
+    const recentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
+    recentSearchesDropdown.innerHTML = ''; // Clear previous list
+
+    // Show dropdown if there are recent searches
+    if (recentSearches.length > 0) {
+        dropdownBtn.classList.remove('bg-gray-200');
+        dropdownBtn.classList.add('bg-white', 'border', 'border-gray-300');
+        recentSearchesDropdown.classList.remove('hidden');
+    } else {
+        dropdownBtn.classList.add('bg-gray-200');
+        recentSearchesDropdown.classList.add('hidden');
+    }
+
+    recentSearches.forEach(city => {
+        const listItem = document.createElement('li');
+        listItem.innerText = city;
+        listItem.classList.add('cursor-pointer', 'hover:bg-gray-100', 'p-2');
+        listItem.onclick = () => fetchWeatherByCity(city); // Fetch weather on click
+        recentSearchesDropdown.appendChild(listItem);
+    });
+}
+
+// Toggle dropdown visibility on button click
+dropdownBtn.addEventListener('click', () => {
+    recentSearchesDropdown.classList.toggle('hidden');
+});

@@ -14,7 +14,21 @@
             <input id="cityInput" type="text" placeholder="Enter city name" class="px-4 py-2 border rounded-l-lg focus:outline-none">
             <button id="searchBtn" class="bg-blue-500 text-white px-4 py-2 rounded-r-lg hover:bg-blue-700">Search</button>
         </div>
-
+        <div class="relative my-4">
+            <h3 class="text-lg font-semibold mb-2"></h3>
+            <div class="flex justify-center">
+                <div class="relative">
+                    <button id="dropdownBtn" class="bg-gray-200 px-4 py-2 rounded w-full text-left focus:outline-none">
+                        Select a city
+                    </button>
+                    <ul id="recentSearchesDropdown" class="absolute left-0 w-full bg-white border border-gray-300 rounded shadow-lg hidden z-10">
+                        <!-- Recent searches will be appended here -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        
         <div class="text-center my-4">
             <button id="currentLocationBtn" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700">
                 Get Current Location Weather
